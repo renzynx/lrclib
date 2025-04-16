@@ -62,11 +62,11 @@ pub async fn route(Query(params): Query<QueryParams>, State(state): State<Arc<Ap
     }
 
     // Retry fetching the track without the album name
-    // if album_name_lower.is_some() {
-    //   if let Some(track) = fetch_track_without_album(&track_name_lower, &artist_name_lower, params.duration, &mut conn).await? {
-    //     return Ok(Json(create_response(track)));
-    //   }
-    // }
+    if album_name_lower.is_some() {
+      if let Some(track) = fetch_track_without_album(&track_name_lower, &artist_name_lower, params.duration, &mut conn).await? {
+        return Ok(Json(create_response(track)));
+      }
+    }
   }
 
   Err(ApiError::TrackNotFoundError)
@@ -82,15 +82,15 @@ async fn fetch_track(track_name_lower: &str, artist_name_lower: &str, album_name
   )
 }
 
-// async fn fetch_track_without_album(track_name_lower: &str, artist_name_lower: &str, duration: Option<f64>, conn: &mut Connection) -> Result<Option<SimpleTrack>> {
-//   get_track_by_metadata(
-//     track_name_lower,
-//     artist_name_lower,
-//     None,
-//     duration,
-//     conn,
-//   )
-// }
+async fn fetch_track_without_album(track_name_lower: &str, artist_name_lower: &str, duration: Option<f64>, conn: &mut Connection) -> Result<Option<SimpleTrack>> {
+  get_track_by_metadata(
+    track_name_lower,
+    artist_name_lower,
+    None,
+    duration,
+    conn,
+  )
+}
 
 async fn handle_missing_track(
   params: &QueryParams,
